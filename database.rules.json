@@ -1,0 +1,53 @@
+{
+  "rules": {
+    ".read": "auth != null",
+    "users": {
+      "$uid": {
+        ".read": "auth != null",
+        ".write": "auth != null && auth.uid === $uid"
+      }
+    },
+    "presence": {
+      ".read": "auth != null",
+      "$uid": { ".write": "auth != null && auth.uid === $uid" }
+    },
+    "lastSeen": {
+      "$uid": { ".write": "auth != null && auth.uid === $uid" }
+    },
+    "typing": {
+      "$cid": {
+        "$uid": { ".write": "auth != null && auth.uid === $uid" }
+      }
+    },
+    "listings": {
+      ".read": "auth != null",
+      "$id": {
+        ".write": "auth != null && ((!data.exists() && newData.child('uid').val() === auth.uid) || (data.exists() && data.child('uid').val() === auth.uid))"
+      }
+    },
+    "favorites": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        "$lid": { ".write": "auth != null && auth.uid === $uid" }
+      }
+    },
+    "conversations": {
+      "$cid": {
+        ".read": "auth != null && data.child('members').child(auth.uid).exists()",
+        ".write": "auth != null"
+      }
+    },
+    "messages": {
+      "$cid": {
+        ".read": "auth != null && root.child('conversations').child($cid).child('members').child(auth.uid).exists()",
+        "$mid": {
+          ".write": "auth != null && newData.child('uid').val() === auth.uid"
+        }
+      }
+    },
+    "reports": {
+      ".write": "auth != null",
+      ".read": "auth != null"
+    }
+  }
+}
