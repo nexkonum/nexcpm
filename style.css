@@ -1,0 +1,271 @@
+:root{
+  --bg:#f4f4f2;--card:#ffffff;--ink:#0a0a0a;--muted:#6f6f6c;--line:#e6e6e2;
+  --dark:#0a0a0a;--danger:#b42318;--ok:#16764a;--accent:#4ade80;
+  --radius:20px;--shadow:0 16px 50px rgba(0,0,0,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:Inter,system-ui,sans-serif;min-height:100vh;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer;border:none;touch-action:manipulation}
+a{text-decoration:none;color:inherit}
+img{display:block;max-width:100%}
+
+/* ── GPU Optimizasyonu ── */
+.page,.listing-card,.modal,.conversation,.bubble,.chat-layout-full{will-change:transform}
+.page.active{transform:translateZ(0)}
+
+/* ── Durum Çubuğu ── */
+.statusbar{position:sticky;top:0;z-index:100;display:flex;gap:8px;justify-content:center;padding:7px 12px;background:#0a0a0a;color:#fff;font-size:11px;font-weight:700}
+.status-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);padding:4px 11px;border-radius:999px}
+.status-pill b{font-size:12px}
+.live-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite}
+
+/* ── Header ── */
+.topbar{height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;background:rgba(244,244,242,.95);backdrop-filter:blur(16px);position:sticky;top:33px;z-index:90;border-bottom:1px solid rgba(0,0,0,.08)}
+.brand{display:flex;gap:10px;align-items:center;font-size:20px;font-weight:900}
+.brand-mark{width:36px;height:36px;background:#0a0a0a;color:#fff;border-radius:11px;display:grid;place-items:center;font-weight:900}
+.top-actions{display:flex;align-items:center;gap:10px}
+.profile-btn{display:flex;gap:8px;align-items:center;border:1px solid var(--line);background:#fff;height:42px;border-radius:13px;padding:0 14px;font-weight:700}
+.avatar{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:#0a0a0a;color:#fff;font-size:11px;font-weight:800}
+
+/* ── Main ── */
+main{max-width:1200px;margin:0 auto;padding:24px 20px 100px}
+.page{display:none}
+.page.active{display:block;animation:pageIn .2s ease-out}
+@keyframes pageIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+/* ── Hero ── */
+.hero{min-height:380px;background:#0a0a0a;color:#fff;border-radius:24px;padding:44px;display:flex;justify-content:space-between;align-items:flex-end;position:relative;overflow:hidden;margin-bottom:30px}
+.hero h1{font-size:clamp(36px,6vw,68px);line-height:.95;letter-spacing:-3px;margin:14px 0 18px}
+.hero h1 em{font-style:normal;color:#999}
+.hero p{max-width:500px;color:#aaa;line-height:1.7;font-size:14px}
+.hero-actions{display:flex;gap:10px;margin-top:22px}
+.hero-card{min-width:180px;padding:20px;border:1px solid rgba(255,255,255,.12);border-radius:18px;background:rgba(255,255,255,.05)}
+.hero-card strong{font-size:32px;display:inline-block;margin:0 4px}
+.hero-card span{color:#999;font-size:12px}
+.hero-stat{padding-top:14px;border-top:1px solid rgba(255,255,255,.12);margin-top:14px}
+.hero-stat b{font-size:20px;margin-right:6px}
+
+/* ── Butonlar ── */
+.primary,.secondary{border-radius:12px;padding:13px 20px;font-weight:800;transition:.15s;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.primary{background:#fff;color:#000}
+.secondary{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.15)}
+.primary:hover,.secondary:hover{transform:translateY(-1px)}
+.small{padding:10px 14px;font-size:13px}
+.text-btn,.link-btn{background:none;font-weight:700;color:var(--ink)}
+.eyebrow{font-size:10px;font-weight:800;letter-spacing:1.7px;color:#888}
+
+/* ── Section Head ── */
+.section-head,.page-title{display:flex;align-items:flex-end;justify-content:space-between;margin:36px 0 18px}
+.section-head h2,.page-title h1{margin-top:5px;font-size:28px;letter-spacing:-1px}
+.page-title{align-items:center}
+.page-title h1{font-size:36px}
+
+/* ── İlan Kartları ── */
+.listing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.listing-grid.wide{grid-template-columns:repeat(3,1fr)}
+.listing-card{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;transition:.15s;box-shadow:0 4px 16px rgba(0,0,0,.05)}
+.listing-card:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+.listing-image{height:200px;background:#e8e8e4;position:relative;overflow:hidden}
+.listing-image img{width:100%;height:100%;object-fit:cover}
+.badge{position:absolute;top:11px;left:11px;background:rgba(10,10,10,.85);color:#fff;border-radius:8px;padding:5px 9px;font-size:10px;font-weight:800}
+.badge.featured{background:#fff;color:#000;left:auto;right:11px}
+.fav-btn{position:absolute;bottom:11px;right:11px;width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.92);font-size:17px;display:grid;place-items:center;box-shadow:0 4px 14px rgba(0,0,0,.2);transition:.15s;z-index:3}
+.fav-btn:hover{transform:scale(1.1)}
+.fav-btn.active{background:#0a0a0a;color:#fff}
+.listing-body{padding:16px}
+.listing-body h3{font-size:16px;margin-bottom:8px;line-height:1.35}
+.listing-meta{color:#888;font-size:11px;margin-bottom:4px}
+.listing-foot{margin-top:12px;padding-top:12px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+.seller{font-size:11px;color:#777}
+.chat-btn{background:#0a0a0a;color:#fff;padding:8px 12px;border-radius:10px;font-size:11px;font-weight:700}
+
+/* ── İlan Hakkı Barı ── */
+.quota-bar{background:#0a0a0a;color:#fff;border-radius:16px;padding:16px 20px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center}
+.quota-info{display:flex;flex-direction:column;gap:2px}
+.quota-label{font-size:11px;color:#888;font-weight:700;letter-spacing:1px}
+.quota-count{font-size:24px;font-weight:900}
+.quota-timer{font-size:13px;color:var(--accent);font-weight:700}
+.quota-timer.expired{color:#b42318}
+
+/* ── Filtreler ── */
+.filters{margin-bottom:20px}
+.searchbox{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:0 14px;height:46px}
+.searchbox input{border:none;outline:none;width:100%;background:none;font-size:14px}
+.searchbox.big{height:52px;margin-top:14px}
+
+/* ── Form ── */
+.form-card,.settings-card,.auth-card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:26px;box-shadow:0 8px 30px rgba(0,0,0,.05)}
+.form-card{max-width:700px;margin:0 auto}
+.form-card label{display:block;font-size:12px;font-weight:700;margin:16px 0}
+.form-card input,.form-card textarea,.form-card select,.auth-card input{display:block;width:100%;margin-top:7px;border:1px solid var(--line);border-radius:11px;padding:12px 14px;background:#fafaf9;outline:none;font-size:14px}
+.form-card input:focus,.form-card textarea:focus,.form-card select:focus,.auth-card input:focus{border-color:#999}
+.counter{float:right;color:#999;font-weight:500}
+.upload-area{border:1.5px dashed #c9c9c5;border-radius:16px;min-height:140px;padding:22px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#666;text-align:center;cursor:pointer;gap:6px}
+.upload-icon{font-size:28px;color:#0a0a0a}
+.preview-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.preview-row img{width:80px;height:80px;object-fit:cover;border-radius:10px}
+.check{display:flex!important;gap:10px;align-items:flex-start!important}
+.check input{width:auto!important;margin-top:2px!important}
+.submit{width:100%;background:#0a0a0a;color:#fff;margin-top:20px}
+
+/* ── Tam Ekran Sohbet — SİYAH TEMA ── */
+.chat-page{background:#0a0a0a!important}
+.chat-page .topbar,.chat-page .statusbar{display:none}
+.chat-page .bottom-nav{border-radius:0;width:100%;left:0;transform:none}
+.chat-layout-full{position:fixed;inset:0;display:grid;grid-template-columns:320px 1fr;background:#0a0a0a;z-index:80}
+.conversation-list-full{border-right:1px solid #222;overflow-y:auto;background:#0a0a0a;padding-top:12px}
+.conversation{padding:14px 16px;border-bottom:1px solid #222;cursor:pointer;display:flex;justify-content:space-between;align-items:center;color:#fff;transition:.1s}
+.conversation:hover{background:#1a1a1a}
+.conversation.active{background:#222;border-left:3px solid var(--accent)}
+.conversation b{font-size:13px;color:#fff}
+.conversation p{font-size:11px;color:#888;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px;max-width:200px}
+.unread-dot{min-width:9px;height:9px;border-radius:50%;background:var(--accent)}
+.chat-panel-full{display:flex;flex-direction:column;min-width:0;background:#0a0a0a;position:relative}
+.chat-head{padding:14px 18px;border-bottom:1px solid #222;font-weight:800;display:flex;justify-content:space-between;align-items:center;color:#fff;background:#0a0a0a;position:relative}
+.chat-head small{color:#888;font-weight:600;font-size:11px}
+.chat-head small.online{color:var(--accent)}
+.chat-menu-btn{background:none;color:#888;font-size:20px;padding:6px 10px;border-radius:8px;transition:.15s}
+.chat-menu-btn:hover{background:#222;color:#fff}
+.chat-messages{padding:16px;display:flex;flex-direction:column;gap:8px;flex:1;overflow-y:auto;background:#0a0a0a;scroll-behavior:smooth}
+.bubble-row{display:flex;gap:6px;align-items:flex-end}
+.bubble-row.mine{justify-content:flex-end}
+.bubble{max-width:75%;padding:10px 14px;border-radius:16px;background:#1a1a1a;border:1px solid #333;color:#fff;font-size:13px;position:relative;word-break:break-word}
+.bubble.mine{background:#fff;color:#000;border-color:#fff}
+.msg-time{font-size:9px;opacity:.5;margin-top:4px;display:block;text-align:right}
+.msg-status{font-size:9px;opacity:.6;margin-top:2px;display:block;text-align:right}
+.chat-compose{display:flex;gap:8px;padding:12px 16px;border-top:1px solid #222;background:#0a0a0a}
+.chat-compose input{flex:1;border:1px solid #333;border-radius:12px;padding:12px 14px;outline:none;background:#1a1a1a;color:#fff;font-size:14px}
+.chat-compose input::placeholder{color:#666}
+.chat-compose button{background:#fff;color:#0a0a0a;border-radius:12px;padding:0 20px;font-weight:800;font-size:13px;transition:.15s}
+.chat-compose button:active{transform:scale(.95)}
+.typing{font-size:11px;color:#888;padding:0 16px 8px;font-style:italic;background:#0a0a0a}
+.chat-empty-full{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:#666;gap:8px}
+.chat-empty-icon{font-size:48px;color:#333}
+.chat-empty-full p{font-size:16px;color:#888}
+.chat-empty-full small{font-size:12px;color:#555}
+
+/* Sohbet Menü Dropdown */
+.chat-menu-dropdown{position:absolute;top:52px;right:16px;background:#1a1a1a;border:1px solid #333;border-radius:12px;overflow:hidden;z-index:100;box-shadow:0 8px 30px rgba(0,0,0,.6);min-width:160px}
+.chat-menu-dropdown button{display:block;width:100%;text-align:left;padding:12px 16px;background:none;color:#fff;font-size:13px;font-weight:600;border:none;border-bottom:1px solid #333;cursor:pointer;transition:.1s}
+.chat-menu-dropdown button:hover{background:#222}
+.chat-menu-dropdown button:last-child{border-bottom:none;color:#b42318}
+
+/* ── Profil ── */
+.profile-cover{background:#0a0a0a;color:#fff;border-radius:22px;padding:30px;display:flex;align-items:center;gap:20px;margin-bottom:18px}
+.profile-avatar{width:72px;height:72px;border-radius:20px;background:#fff;color:#0a0a0a;display:grid;place-items:center;font-size:28px;font-weight:900}
+.profile-cover h1{margin:4px 0;font-size:30px}
+.profile-cover p{color:#999;font-size:13px}
+.profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+.settings-card h3{margin-bottom:10px;font-size:15px}
+.settings-card button{display:block;width:100%;text-align:left;border:none;border-bottom:1px solid var(--line);background:none;padding:13px 0;font-weight:700;font-size:13px;cursor:pointer}
+.settings-card button:hover{color:#555}
+.settings-card p{font-size:12px;color:#777;line-height:1.7}
+.settings-card .danger{color:var(--danger)}
+
+/* ── Admin ── */
+.admin-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+.stat-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px}
+.stat-card b{font-size:26px;display:block}
+.stat-card span{font-size:11px;color:#888;font-weight:700}
+.report-list{display:flex;flex-direction:column;gap:10px}
+.report-item{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.report-item p{margin:4px 0;font-size:12px;color:#666}
+.report-actions{display:flex;gap:6px}
+.report-actions button{border:1px solid var(--line);background:#fff;border-radius:9px;padding:7px 12px;font-size:11px;font-weight:700}
+.report-actions .danger{color:var(--danger);border-color:#f0c9c5}
+
+/* ── Auth ── */
+.auth-page{min-height:calc(100vh - 140px);display:none;align-items:center;justify-content:center}
+.auth-page.active{display:flex}
+.auth-card{width:min(420px,100%);padding:32px}
+.auth-logo{width:50px;height:50px;background:#0a0a0a;color:#fff;border-radius:15px;display:grid;place-items:center;font-size:22px;font-weight:900;margin-bottom:20px}
+.auth-card h1{font-size:36px;letter-spacing:-2px;margin:6px 0}
+.auth-card p{color:#777;font-size:13px;margin-bottom:20px}
+.auth-card label{display:block;font-size:11px;font-weight:700;margin:14px 0}
+.auth-card small{display:block;color:#999;text-align:center;margin-top:16px;line-height:1.6}
+.link-btn{display:block;margin:16px auto}
+
+/* ── Boş Durum / Modal / Toast ── */
+.empty{text-align:center;padding:50px 20px;color:#777}
+.empty-icon{font-size:38px;color:#bbb;margin-bottom:8px}
+.empty h3{color:#222;margin-bottom:4px}
+.hidden{display:none!important}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(8px);z-index:200;padding:20px;align-items:center;justify-content:center}
+.modal.open{display:flex}
+.modal-box{width:min(520px,100%);max-height:90vh;overflow-y:auto;background:#fff;border-radius:20px;padding:24px;position:relative}
+.modal-close{position:absolute;right:14px;top:12px;background:#eee;border-radius:50%;width:32px;height:32px;font-size:18px;display:grid;place-items:center}
+.detail-box{width:min(680px,100%)}
+.gallery{margin-bottom:16px}
+.gallery img{width:100%;height:320px;object-fit:cover;border-radius:14px}
+.detail-info{display:grid;grid-template-columns:1fr 1fr;gap:6px 20px;margin:16px 0;font-size:13px}
+.detail-info div{display:flex;justify-content:space-between;border-bottom:1px dashed var(--line);padding:8px 0}
+.detail-info span{color:#888}
+.detail-actions{display:flex;gap:8px;margin-top:18px;flex-wrap:wrap}
+.detail-actions button{flex:1;min-width:120px;border-radius:11px;padding:12px;font-weight:800;font-size:13px}
+.detail-actions .primary{background:#0a0a0a;color:#fff}
+.detail-actions .secondary{background:#fff;border:1px solid var(--line)}
+.detail-actions .danger-btn{background:#fff;color:var(--danger);border:1px solid #f0c9c5}
+
+/* 2 fotoğraf galerisi */
+.detail-gallery{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.detail-gallery img{height:200px;width:100%;object-fit:cover;border-radius:14px}
+@media(max-width:560px){.detail-gallery{grid-template-columns:1fr}}
+
+/* ── Öne Çıkarma Modali ── */
+.ad-watch-box{text-align:center}
+.ad-video-area{margin:18px 0}
+.ad-fake-video{background:#0a0a0a;border-radius:14px;height:150px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:#fff}
+.ad-play-icon{font-size:34px;opacity:.8;cursor:pointer}
+.ad-play-icon:hover{opacity:1}
+.ad-fake-video p{font-size:12px;color:#888}
+.ad-progress{height:6px;background:#eee;border-radius:99px;overflow:hidden;margin:14px 0}
+.ad-progress-fill{height:100%;background:#0a0a0a;border-radius:99px;width:0%;transition:width 1s linear}
+.ad-timer-text{font-size:13px;color:#888;margin:8px 0 14px}
+
+/* ── Alt Navigasyon ── */
+.bottom-nav{display:none;position:fixed;bottom:0;left:50%;transform:translateX(-50%);z-index:150;width:min(600px,calc(100% - 20px));height:64px;background:rgba(10,10,10,.96);backdrop-filter:blur(20px);border-radius:18px 18px 0 0;justify-content:space-around;align-items:center;box-shadow:0 -10px 40px rgba(0,0,0,.2)}
+body.logged-in .bottom-nav{display:flex}
+.nav-item{background:none;color:#888;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:20px;padding:8px 12px;transition:.15s}
+.nav-item small{font-size:9px}
+.nav-item.active{color:#fff}
+.create-nav span{background:#fff;color:#0a0a0a;width:34px;height:34px;border-radius:11px;display:grid;place-items:center;font-size:22px}
+
+/* ── Toast ── */
+#toast-root{position:fixed;top:110px;right:18px;z-index:300;display:flex;flex-direction:column;gap:8px;max-width:min(360px,calc(100vw - 36px))}
+.toast{background:#0a0a0a;color:#fff;padding:12px 16px;border-radius:12px;font-size:13px;box-shadow:var(--shadow);animation:toastIn .2s ease-out}
+.toast.bad{background:#8b1e16}
+@keyframes toastIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+
+/* ── Responsive ── */
+@media(max-width:1024px){
+  .admin-stats{grid-template-columns:repeat(2,1fr)}
+  .chat-layout-full{grid-template-columns:260px 1fr}
+}
+@media(max-width:820px){
+  .hero{padding:30px;min-height:400px;flex-direction:column;align-items:flex-start;gap:20px}
+  .hero-card{align-self:stretch}
+  .listing-grid,.listing-grid.wide{grid-template-columns:repeat(2,1fr)}
+  .chat-layout-full{grid-template-columns:1fr}
+  .conversation-list-full{max-height:200px;border-right:none;border-bottom:1px solid #222}
+}
+@media(max-width:560px){
+  main{padding:14px 12px 90px}
+  .statusbar{font-size:10px}
+  .topbar{height:58px;padding:0 14px;top:31px}
+  .hero{padding:24px 18px}
+  .hero h1{font-size:40px;letter-spacing:-2px}
+  .listing-grid,.listing-grid.wide{grid-template-columns:1fr}
+  .section-head,.page-title{margin:26px 0 14px}
+  .page-title h1{font-size:28px}
+  .profile-grid{grid-template-columns:1fr}
+  .profile-cover{padding:22px}
+  .auth-card{padding:24px}
+  .gallery img{height:220px}
+  .detail-info{grid-template-columns:1fr}
+  .bottom-nav{width:100%;border-radius:16px 16px 0 0}
+  .chat-layout-full{inset:0}
+  .chat-page .bottom-nav{border-radius:0}
+  .quota-bar{flex-direction:column;gap:8px;text-align:center}
+}
