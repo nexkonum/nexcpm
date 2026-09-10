@@ -52,20 +52,6 @@ initClaimButton();
 document.addEventListener("listings:updated", () => renderHome(listingState.listings, listingState.favorites));
 document.addEventListener("favorites:updated", () => renderHome(listingState.listings, listingState.favorites));
 
-// Arada reklam göster (her 2 dakikada bir)
-let adShown = false;
-setInterval(() => {
-  if (authState.user && !adShown && Math.random() > 0.7) {
-    adShown = true;
-    try {
-      if (window.adsbygoogle && window.adsbygoogle.push) {
-        window.adsbygoogle.push({ google_ad_client: "ca-pub-3422620485038789", google_ad_slot: "AUTO_AD", google_ad_format: "autorelaxed" });
-      }
-    } catch (e) {}
-    setTimeout(() => adShown = false, 30000);
-  }
-}, 120000);
-
 initAuth(async (user) => {
   if (user) {
     startPresence();
@@ -73,7 +59,7 @@ initAuth(async (user) => {
     subscribeFavorites();
     subscribeAdmin();
     const quota = await checkQuota();
-    if (quota.remaining === 0) toast("İlan hakkın kalmamış. Hakkı yenile butonuna tıkla.", true);
+    if (quota.remaining === 0) toast("İlan hakkın kalmamış. Reklam izleyerek yenileyebilirsin.", true);
     go("home");
   } else {
     chatSubscribed = false;

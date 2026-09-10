@@ -2,7 +2,7 @@ import { ref, get, update } from "https://www.gstatic.com/firebasejs/12.0.0/fire
 import { db } from "./firebase.js";
 import { $, avatar, toast, firebaseMsg } from "./utils.js";
 import { authState } from "./auth.js";
-import { listingState, toggleFavorite } from "./listing.js";
+import { listingState, toggleFavorite, startAdTimer } from "./listing.js";
 import { card, bindCards } from "./home.js";
 
 export function renderProfile() {
@@ -38,8 +38,6 @@ export function renderProfileList(mode) {
       if (!cardEl) return;
       const footEl = cardEl.querySelector(".listing-foot");
       if (!footEl) return;
-      
-      // Satıldı butonu
       if (!footEl.querySelector(".sold-btn")) {
         const b = document.createElement("button");
         b.className = "chat-btn sold-btn";
@@ -83,25 +81,4 @@ export function initProfileButtons(go) {
     $("#adWatchModal").classList.add("open");
     startAdTimer();
   };
-}
-
-let adInterval = null;
-
-function startAdTimer() {
-  $("#claimRewardBtn").classList.add("hidden");
-  $("#adProgressFill").style.width = "0%";
-  let seconds = 30;
-  $("#adTimer").textContent = seconds;
-  clearInterval(adInterval);
-  adInterval = setInterval(() => {
-    seconds--;
-    const progress = ((30 - seconds) / 30) * 100;
-    $("#adProgressFill").style.width = progress + "%";
-    if (seconds > 0) $("#adTimer").textContent = seconds;
-    else {
-      clearInterval(adInterval);
-      $("#adTimer").textContent = "0";
-      $("#claimRewardBtn").classList.remove("hidden");
-    }
-  }, 1000);
 }

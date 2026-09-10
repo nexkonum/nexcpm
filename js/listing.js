@@ -7,7 +7,6 @@ import { card, bindCards } from "./home.js";
 import { startChat } from "./chat.js";
 
 export const listingState = { listings: {}, favorites: {}, currentDetail: null, files: [] };
-let quotaTimerInterval = null;
 let selectedListingForFeature = null;
 
 export function subscribeListings() {
@@ -119,7 +118,7 @@ export function initCreateForm() {
   };
   $("#cDesc").oninput = (e) => { const n = wordCount(e.target.value); $("#descCount").textContent = `${n}/500 kelime`; $("#descCount").style.color = n > 500 ? "#b42318" : "#999"; };
 
-  // Hakkı yenile butonu
+  // Hakkı yenile butonu — direk reklam açar, süre beklemez
   $("#renewQuotaBtn").onclick = () => { $("#adWatchModal").classList.add("open"); startAdTimer(); };
 
   $("#listingForm").onsubmit = async (e) => {
@@ -135,7 +134,7 @@ export function initCreateForm() {
     if (!$("#rulesAccept").checked) return toast("Kuralları kabul et.", true);
 
     const quota = await checkQuota();
-    if (quota.remaining <= 0) { toast("İlan hakkın kalmadı. Hakkı yenile butonuna tıkla.", true); return; }
+    if (quota.remaining <= 0) { toast("İlan hakkın kalmadı. Yukarıdaki 'Reklam İzle' butonuna tıkla.", true); return; }
 
     const btn = $("#submitListing");
     btn.disabled = true;
@@ -144,12 +143,12 @@ export function initCreateForm() {
       const id = push(ref(db, "listings")).key;
       const urls = await Promise.all(listingState.files.map((f, i) => uploadListingImage(authState.user.uid, id + "_" + i, f)));
       await set(ref(db, `listings/${id}`), { uid: authState.user.uid, sellerName: authState.profile?.username || "Kullanıcı", title, description: desc, images: urls, price: Number(price), featuredUntil: 0, favCount: 0, createdAt: serverTimestamp() });
-      await set(ref(db, `quotas/${authState.user.uid}`), { remaining: 0, lastUsed: Date.now() });
+      await set(ref(db, `quotas/${authState.user.uid}`), { remaining: 0 });
       e.target.reset();
       listingState.files = [];
       $("#previewRow").innerHTML = "";
-      updateQuotaUI({ remaining: 0, lastUsed: Date.now() });
-      toast("İlanın yayınlandı ✓ (1 saat sonra silinecek)");
+      updateQuotaUI({ remaining: 0 });
+      toast("İlanın yayınlandı ✓ (1 saat sonra otomatik kalkar)");
       document.querySelector('[data-page="listings"]').click();
     } catch (err) { toast("Hata: " + (err?.message || "bilinmeyen"), true); } finally { btn.disabled = false; btn.textContent = "İlanı Yayınla"; }
   };
@@ -169,14 +168,12 @@ export function initReport() {
 export async function checkQuota() {
   if (!authState.user) return { remaining: 0 };
   const snap = await get(ref(db, `quotas/${authState.user.uid}`));
-  if (!snap.exists()) { const q = { remaining: 1, lastUsed: 0 }; await set(ref(db, `quotas/${authState.user.uid}`), q); return q; }
+  if (!snap.exists()) { const q = { remaining: 1 }; await set(ref(db, `quotas/${authState.user.uid}`), q); return q; }
   return snap.val();
 }
 
 export async function updateQuotaUI(quota) {
   const countEl = $("#quotaCount");
-  const timerEl = $("#quotaTimer");
-  const bar = $("#quotaBar");
   const renewBtn = $("#renewQuotaBtn");
   const submitBtn = $("#submitListing");
   if (!countEl) return;
@@ -185,51 +182,12 @@ export async function updateQuotaUI(quota) {
   countEl.textContent = `${remaining} / 1`;
   
   if (remaining > 0) {
-    timerEl.textContent = "✓ İlan verebilirsin";
-    timerEl.classList.remove("expired");
-    bar.style.borderLeft = "4px solid #4ade80";
     if (renewBtn) renewBtn.style.display = "none";
-    if (submitBtn) submitBtn.disabled = false;
+    if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = "İlanı Yayınla"; }
   } else {
-    const elapsed = Date.now() - (quota?.lastUsed || 0);
-    const remainingTime = Math.max(0, 60 * 60 * 1000 - elapsed);
-    if (remainingTime > 0) {
-      startQuotaCountdown(remainingTime);
-      if (renewBtn) renewBtn.style.display = "none";
-      if (submitBtn) submitBtn.disabled = true;
-    } else {
-      timerEl.textContent = "Süre doldu. Hakkı yenile.";
-      timerEl.classList.add("expired");
-      bar.style.borderLeft = "4px solid #b42318";
-      if (renewBtn) { renewBtn.style.display = "block"; renewBtn.textContent = "🔄 Hakkı Yenile (Reklam İzle)"; }
-      if (submitBtn) submitBtn.disabled = true;
-    }
+    if (renewBtn) { renewBtn.style.display = "inline-flex"; renewBtn.textContent = "🔄 Reklam İzle (Hakkı Yenile)"; }
+    if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = "⛔ İlan Hakkı Yok"; }
   }
-}
-
-function startQuotaCountdown(ms) {
-  const timerEl = $("#quotaTimer");
-  const bar = $("#quotaBar");
-  if (!timerEl) return;
-  bar.style.borderLeft = "4px solid #f59e0b";
-  clearInterval(quotaTimerInterval);
-  quotaTimerInterval = setInterval(() => {
-    ms -= 1000;
-    if (ms <= 0) {
-      clearInterval(quotaTimerInterval);
-      timerEl.textContent = "Süre doldu. Hakkı yenile.";
-      timerEl.classList.add("expired");
-      bar.style.borderLeft = "4px solid #b42318";
-      const renewBtn = $("#renewQuotaBtn");
-      const submitBtn = $("#submitListing");
-      if (renewBtn) renewBtn.style.display = "block";
-      if (submitBtn) submitBtn.disabled = true;
-      return;
-    }
-    const m = Math.floor(ms / 60000);
-    const s = Math.floor((ms % 60000) / 1000);
-    timerEl.textContent = `⏱️ ${m}:${s.toString().padStart(2, "0")} kaldı`;
-  }, 1000);
 }
 
 // ÖNE ÇIKARMA — REKLAM İZLE → İLAN SEÇ → ÖNE ÇIKAR
@@ -244,16 +202,12 @@ export function startAdTimer() {
   adWatched = false;
   clearInterval(adInterval);
   
-  // Google AdSense Reward Ad
+  // Adsterra Reward Ad
   try {
-    if (window.adsbygoogle && window.adsbygoogle.push) {
-      window.adsbygoogle.push({
-        google_ad_client: "ca-pub-3422620485038789",
-        google_ad_slot: "REWARD_AD_SLOT",
-        google_ad_format: "autorelaxed"
-      });
-    }
-  } catch (e) { console.log("AdSense yükleniyor..."); }
+    const adScript = document.createElement("script");
+    adScript.src = "https://www.profitableratecpmnetwork.com/g7qgwyurk?key=eb020d6c26f1fdfa983fd3d9bec96597";
+    document.getElementById("adContainer")?.appendChild(adScript);
+  } catch (e) { console.log("Adsterra yükleniyor..."); }
   
   adInterval = setInterval(() => {
     seconds--;
@@ -279,17 +233,19 @@ export function initClaimButton() {
       .filter(([id, x]) => x.uid === authState.user.uid && !x.sold);
     
     if (myListings.length === 0) {
-      toast("Önce ilan vermelisin.", true);
+      // İlan yoksa sadece hakkı yenile
+      await set(ref(db, `quotas/${authState.user.uid}`), { remaining: 1 });
+      updateQuotaUI({ remaining: 1 });
+      toast("🎉 İlan hakkın yenilendi! Şimdi ilan verebilirsin.");
       return;
     }
     
-    // İlan seçme modalını aç
+    // İlan seçme ekranı
     showFeatureListingPicker(myListings);
   };
 }
 
 function showFeatureListingPicker(listings) {
-  // Mevcut modali kullan veya yeni bir seçim ekranı göster
   const modal = document.createElement("div");
   modal.className = "modal open";
   modal.id = "featurePickerModal";
@@ -313,11 +269,7 @@ function showFeatureListingPicker(listings) {
     </div>
   `;
   document.body.appendChild(modal);
-  
-  modal.onclick = (e) => {
-    if (e.target === modal) modal.remove();
-  };
-  
+  modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
   document.querySelectorAll(".feature-option").forEach((opt) => {
     opt.onclick = async () => {
       const fid = opt.dataset.fid;
